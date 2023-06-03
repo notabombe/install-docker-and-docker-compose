@@ -15,4 +15,4 @@ This script will install docker and the docker compose plugin (the replacement f
 
 If you would like to support my development, feel free to buy me a coffee, it makes a big difference! Thanks.
 
-<a href="https://www.buymeacoffee.com/jinweijie" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/white_img.png" alt="Buy Me A Coffee"></a>
+<a href="https://www.buymeacoffee.com/notabombe" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/white_img.png" alt="Buy Me A Coffee"></a>
