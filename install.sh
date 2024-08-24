@@ -1,25 +1,39 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-get_latest_release() {
-   curl -sL https://api.github.com/repos/$1/releases/latest | grep '"tag_name":' | cut -d'"' -f4
-}
+# Step 0: Check if VirtualBox is installed
+if ! command -v VBoxManage &> /dev/null
+then
+    echo "VirtualBox is not installed. Installing VirtualBox..."
+    sudo apt-get update
+    sudo apt-get install -y virtualbox
+else
+    echo "VirtualBox is already installed."
+fi
 
-COMPOSE_LATEST_VERSION=$(get_latest_release "docker/compose")
-
-echo "Docker compose plugin latest version: $COMPOSE_LATEST_VERSION"
-
-curl -fsSL https://get.docker.com -o get-docker.sh | sh
-
+# Step 1: Install Docker
+echo "Installing Docker..."
+curl -fsSL https://get.docker.com -o get-docker.sh
 sh get-docker.sh
-
 rm get-docker.sh
 
-echo "Docker installed."
+# Step 2: Install Docker Compose
+echo "Installing Docker Compose..."
+DOCKER_COMPOSE_VERSION=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
+sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
 
-sudo mkdir -p /usr/lib/docker/cli-plugins/
+# Step 3: Install Docker Machine
+echo "Installing Docker Machine..."
+DOCKER_MACHINE_VERSION=$(curl -s https://api.github.com/repos/docker/machine/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
+curl -L "https://github.com/docker/machine/releases/download/${DOCKER_MACHINE_VERSION}/docker-machine-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-machine
+sudo chmod +x /usr/local/bin/docker-machine
 
-sudo curl -SL https://github.com/docker/compose/releases/download/$COMPOSE_LATEST_VERSION/docker-compose-linux-x86_64 -o /usr/lib/docker/cli-plugins/docker-compose
+# Step 4: Create a Docker Machine
+echo "Creating Docker Machine..."
+docker-machine create --driver virtualbox default
 
-sudo chmod +x /usr/lib/docker/cli-plugins/docker-compose
+# Step 5: Set Docker Machine environment to default
+echo "Setting Docker Machine environment to default..."
+eval $(docker-machine env default)
 
-echo "All done, you can use docker -v && docker compose version to verify the installation."
+echo "Docker, Docker Compose, and Docker Machine have been installed and configured."
