@@ -25,7 +25,7 @@ sudo chmod +x /usr/local/bin/docker-compose
 # Step 3: Install Docker Machine
 echo "Installing Docker Machine..."
 DOCKER_MACHINE_VERSION=$(curl -s https://api.github.com/repos/docker/machine/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
-curl -L "https://github.com/docker/machine/releases/download/${DOCKER_MACHINE_VERSION}/docker-machine-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-machine
+sudo curl -L "https://github.com/docker/machine/releases/download/${DOCKER_MACHINE_VERSION}/docker-machine-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-machine
 sudo chmod +x /usr/local/bin/docker-machine
 
 # Step 4: Create a Docker Machine
